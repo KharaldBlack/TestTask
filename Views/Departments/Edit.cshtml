@@ -1,0 +1,90 @@
+@model TestTask.ViewModels.DepartmentViewModel
+
+<h2>Редактировать департамент</h2>
+
+<form asp-action="Edit">
+    <div class="form-group">
+        <label asp-for="DepartmentName" class="control-label">Название отдела</label>
+        <input asp-for="DepartmentName" class="form-control" />
+        <span asp-validation-for="DepartmentName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ParentDepartmentID" class="control-label">Родительский отдел</label>
+        <select asp-for="ParentDepartmentID" class="form-control">
+            <option value="">(Без родительского отдела)</option>
+            @foreach (var dept in ViewBag.Departments)
+            {
+                if (dept.DepartmentID != Model.DepartmentID)
+                {
+                    <option value="@dept.DepartmentID">@dept.DepartmentName</option>
+                }
+            }
+        </select>
+        <span asp-validation-for="ParentDepartmentID" class="text-danger"></span>
+    </div>
+
+    <h3>Должности</h3>
+    <div id="positionFields">
+        @for (int i = 0; i < Model.Positions.Count; i++)
+        {
+            <div class="position-row">
+                <div class="form-group">
+                    <label>Название должности</label>
+                    <input asp-for="Positions[i].PositionName" class="form-control mb-2" />
+
+                    <label>Минимальная зарплата</label>
+                    <input asp-for="Positions[i].MinSalary" class="form-control mb-2" />
+
+                    <label>Максимальная зарплата</label>
+                    <input asp-for="Positions[i].MaxSalary" class="form-control mb-2" />
+                    
+                    <label>Максимальное количество сотрудников</label>
+                    <input asp-for="Positions[i].MaxEmployees" class="form-control mb-2" />
+                    
+                    <button type="button" class="btn btn-danger remove-position" data-index="@i">Удалить</button>
+                </div>
+            </div>
+        }
+    </div>
+    
+    <button type="button" id="addPosition" class="btn btn-secondary">Добавить должность</button>
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Сохранить изменения" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        let positionIndex = @Model.Positions.Count;
+
+        document.getElementById('addPosition').addEventListener('click', function () {
+            var positionField = `
+                <div class="position-row">
+                    <div class="form-group">
+                        <label>Название должности</label>
+                        <input type="text" name="Positions[` + positionIndex + `].PositionName" class="form-control mb-2" />
+
+                        <label>Минимальная зарплата</label>
+                        <input type="number" name="Positions[` + positionIndex + `].MinSalary" class="form-control mb-2" />
+
+                        <label>Максимальная зарплата</label>
+                        <input type="number" name="Positions[` + positionIndex + `].MaxSalary" class="form-control mb-2" />
+
+                        <label>Максимальное количество сотрудников</label>
+                        <input type="number" name="Positions[` + positionIndex + `].MaxEmployees" class="form-control mb-2" />
+
+                        <button type="button" class="btn btn-danger remove-position" data-index="` + positionIndex + `">Удалить</button>
+                    </div>
+                </div>`;
+            document.getElementById('positionFields').insertAdjacentHTML('beforeend', positionField);
+            positionIndex++;
+        });
+
+        document.getElementById('positionFields').addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-position')) {
+                e.target.closest('.position-row').remove();
+            }
+        });
+    </script>
+}

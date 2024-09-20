@@ -1,0 +1,79 @@
+@model IEnumerable<TestTask.Models.Employee>
+
+<h2>Список сотрудников</h2>
+
+<form id="searchForm" class="form-inline">
+    <div class="form-group mb-2">
+        <input type="text" class="form-control" id="searchQuery" placeholder="Введите ФИО, телефон или отдел" />
+    </div>
+</form>
+
+<a href="@Url.Action("Create", "Employees")" class="btn btn-primary">Добавить нового сотрудника</a>
+
+<div id="employeesTable">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Фото</th>
+                <th>ФИО</th>
+                <th>Отдел</th>
+                <th>Должность</th>
+                <th>Номер телефона</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in Model)
+            {
+                <tr>
+                    <td>
+                        @if (employee.Photo != null && employee.Photo.Length > 0)
+                        {
+                            <img src="@Url.Action("GetPhoto", "Employees", new { id = employee.EmployeeID })" alt="Фото" width="150" height="150" />
+                        }
+                        else
+                        {
+                            <img src="~/images/no-photo-icon.webp" alt="Фото отсутствует" width="150" height="150" />
+                        }
+                    </td>
+                    <td>@employee.FullName</td>
+                    <td>@(employee.Position?.Department?.DepartmentName ?? "Не указан")</td>
+                    <td>@(employee.Position?.PositionName ?? "Не указана")</td>
+                    <td>@employee.PhoneNumber</td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = employee.EmployeeID })" class="btn btn-secondary btn-sm">Редактировать</a>
+                        <a href="@Url.Action("Delete", new { id = employee.EmployeeID })" class="btn btn-sm btn-danger">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#searchForm').submit(function (event) {
+                event.preventDefault();
+                performSearch();
+            });
+
+            function performSearch() {
+                var query = $('#searchQuery').val();
+                $.ajax({
+                    url: '@Url.Action("Search", "Employees")',
+                    type: 'GET',
+                    data: { searchQuery: query },
+                    success: function (result) {
+                        $('#employeesTable').html(result);
+                    }
+                });
+            }
+
+            $('#searchQuery').on('input', function () {
+                performSearch();
+            });
+        });
+    </script>
+}

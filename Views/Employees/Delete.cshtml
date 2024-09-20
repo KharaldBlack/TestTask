@@ -1,0 +1,25 @@
+@model TestTask.Models.Employee
+
+<h2>Удалить сотрудника</h2>
+
+<div>
+    <h3>Вы уверены, что хотите удалить этого сотрудника?</h3>
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">ФИО</dt>
+            <dd class="col-sm-10">@Model.FullName</dd>
+            <dt class="col-sm-2">Должность</dt>
+            <dd class="col-sm-10">@(Model.Position?.PositionName ?? "Не указана")</dd>
+            <dt class="col-sm-2">Отдел</dt>
+            <dd class="col-sm-10">@(Model.Position?.Department?.DepartmentName ?? "Не указан")</dd>
+            <dt class="col-sm-2">Номер телефона</dt>
+            <dd class="col-sm-10">@Model.PhoneNumber</dd>
+        </dl>
+    </div>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="EmployeeID" />
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Отменить</a>
+    </form>
+</div>

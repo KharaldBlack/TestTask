@@ -1,0 +1,24 @@
+@model IEnumerable<TestTask.ViewModels.DepartmentViewModel>
+
+<h1>Список отделов</h1>
+
+<form method="get" asp-action="Index" class="mb-3">
+    <input type="text" name="searchTerm" placeholder="Поиск по названию или должностям" class="form-control" />
+    <button type="submit" class="btn btn-secondary mt-2">Поиск</button>
+</form>
+
+<a href="@Url.Action("Create", "Departments")" class="btn btn-primary mb-3">Добавить новый отдел</a>
+
+@if (Model != null && Model.Any())
+{
+    <ul class="list-group">
+        @foreach (var department in Model)
+        {
+            @Html.Partial("_DepartmentTree", department)
+        }
+    </ul>
+}
+else
+{
+    <p>Нет доступных отделов.</p>
+}

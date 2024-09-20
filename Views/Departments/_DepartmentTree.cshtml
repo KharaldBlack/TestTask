@@ -1,0 +1,75 @@
+@model TestTask.ViewModels.DepartmentViewModel
+
+<li class="list-group-item">
+    <h4>@Model.DepartmentName</h4>
+
+    @if (Model.Positions != null && Model.Positions.Any())
+    {
+        <div class="mb-2">
+            @foreach (var position in Model.Positions)
+            {
+                <p>@position.PositionName: @position.MinSalary - @position.MaxSalary</p>
+                <p>Максимальное количество сотрудников: @position.MaxEmployees</p>
+
+                @if (position.Employees != null && position.Employees.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var employee in position.Employees)
+                        {
+                            <li class="list-group-item">
+                                @Html.ActionLink(employee.FullName, "Details", "Employees", new { id = employee.EmployeeID }, null)
+                            </li>
+                        }
+                    </ul>
+                }
+
+                else
+                {
+                    <p>Нет сотрудников на данной должности</p>
+                }
+            }
+        </div>
+    }
+    else
+    {
+        <p>Нет должностей</p>
+    }
+
+    @if (Model.SubDepartments != null && Model.SubDepartments.Any())
+    {
+        <div class="subdepartments">
+            <input type="checkbox" id="toggle-@Model.DepartmentID" class="toggle" />
+            <label for="toggle-@Model.DepartmentID" class="toggle-label">Показать подотделы</label>
+            <ul class="subdepartment-list">
+                @foreach (var subDepartment in Model.SubDepartments)
+                {
+                    @Html.Partial("_DepartmentTree", subDepartment)
+                }
+            </ul>
+        </div>
+    }
+
+    <div class="mt-2">
+        <a href="@Url.Action("Edit", "Departments", new { id = Model.DepartmentID })" class="btn btn-secondary btn-sm">Редактировать</a>
+        <a href="@Url.Action("Delete", "Departments", new { id = Model.DepartmentID })" class="btn btn-danger btn-sm">Удалить</a>
+    </div>
+</li>
+
+<style>
+    .toggle {
+        display: none;
+    }
+    .toggle-label {
+        cursor: pointer;
+        display: block;
+        margin-bottom: 5px;
+    }
+    .toggle:checked + .toggle-label + .subdepartment-list {
+        display: block;
+    }
+    .subdepartment-list {
+        display: none;
+        list-style: none;
+        padding-left: 0;
+    }
+</style>

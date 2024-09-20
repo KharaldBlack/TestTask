@@ -1,0 +1,22 @@
+@model TestTask.Models.Employee
+
+<h1>Детали сотрудника</h1>
+
+<div>
+    <h3>@Model.FullName</h3>
+    <p><strong>Телефон:</strong> @Model.PhoneNumber</p>
+    <p><strong>Должность:</strong> @(Model.Position?.PositionName ?? "Не указана")</p>
+    <p><strong>Отдел:</strong> @(Model.Position?.Department?.DepartmentName ?? "Не указан")</p>
+
+    @if (Model.Photo != null)
+    {
+        <h4>Фото сотрудника:</h4>
+        <img src="@Url.Action("GetPhoto", "Employees", new { id = Model.EmployeeID })" alt="Фото" style="max-width:200px;"/>
+    }
+</div>
+
+<div>
+    <a href="@Url.Action("Edit", "Employees", new { id = Model.EmployeeID })" class="btn btn-secondary">Редактировать</a>
+    <a href="@Url.Action("Delete", "Employees", new { id = Model.EmployeeID })" class="btn btn-danger">Удалить</a>
+    <a href="@Url.Action("Index", "Employees")" class="btn btn-primary">Назад к списку</a>
+</div>
